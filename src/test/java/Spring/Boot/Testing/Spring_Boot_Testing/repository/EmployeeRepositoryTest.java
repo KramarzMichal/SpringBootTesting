@@ -35,7 +35,7 @@ class EmployeeRepositoryTest {
 
     @Test
     @DisplayName("Zapisywanie pracownika")
-    void givenEmployeeObject_whenSave_thenReturnSavedEmployee(){
+    void givenEmployeeObject_whenSave_thenReturnSavedEmployee() {
         // given
         // when
         Employee savedEmployee = employeeRepository.save(employee);
@@ -48,7 +48,7 @@ class EmployeeRepositoryTest {
 
     @DisplayName("pobieranie wszystkich pracowników")
     @Test
-    void givenEmployeeList_whenFindAll_thenReturnEmployeeList(){
+    void givenEmployeeList_whenFindAll_thenReturnEmployeeList() {
         // given
         Employee employee2 = Employee.builder()
                 .firstName("Adam")
@@ -65,11 +65,74 @@ class EmployeeRepositoryTest {
         assertThat(employeeList).isNotNull();
         assertThat((employeeList).size()).isEqualTo(2);
     }
-    // pobieranie pracowników po id
-    // pobieranie pracowników po email
-    // uaktualnianie danych pracowników
-    // usuwanie pracownika
-    // testy dla zapytań JPQL
-    // testy dla zapytań z indeksowanymi parametrami
-    // testy dla zapytań z nazwami parametrów
+
+    @DisplayName("Pobieranie pracownika po Id")
+    @Test
+    void shouldFindEmployeeById() {
+        //given
+        employeeRepository.save(employee);
+        //when
+        Employee employeeById = employeeRepository.findById(employee.getId()).get();
+        //then
+        assertThat(employeeById).isNotNull();
+        assertThat(employeeById).isEqualTo(employee);
+    }
+
+    @DisplayName("Pobieranie po adresie email")
+    @Test
+    void shouldFindEmplayeeByEmail() {
+        //given
+        employeeRepository.save(employee);
+        //when
+        Employee employeeByEmail = employeeRepository.findByEmail(employee.getEmail()).get();
+        //then
+        assertThat(employeeByEmail).isNotNull();
+        assertThat(employeeByEmail).isEqualTo(employee);
+    }
+
+    @DisplayName("Uaktualnienie danych pracownika")
+    @Test
+    void shouldUpdateEmployeeData() {
+        //given
+        employeeRepository.save(employee);
+        Employee savedEmployee = employeeRepository.findById(employee.getId()).get();
+        savedEmployee.setEmail("adrzej@duda.pl");
+        savedEmployee.setFirstName("Andrzej");
+        //when
+        Employee updatedEmployee = employeeRepository.save(savedEmployee);
+        //then
+        assertThat(savedEmployee.getEmail()).isEqualTo(updatedEmployee.getEmail());
+        assertThat(savedEmployee.getFirstName()).isEqualTo((updatedEmployee.getFirstName()));
+    }
+
+    @DisplayName("Usuwanie praconika")
+    @Test
+    void shouldDeleteEmployee() {
+        //given
+        employeeRepository.save(employee);
+        //when
+        employeeRepository.deleteById(employee.getId());
+        //then
+        assertThat(employeeRepository.findById(employee.getId()).isEmpty());
+    }
+
+    @DisplayName("Testy dla zapytań z indeksowanymi parametrami")
+    @Test
+    void givenEmployee_whenFindByFirstNameAndLastName_thenReturnEmployee() {
+        //given
+        Employee savedEmployee = employeeRepository.save(employee);
+        //when
+        Employee foundEmployee = employeeRepository.findByFirstNameAndLastName(savedEmployee.getFirstName(), savedEmployee.getLastName()).get();
+        //then
+        assertThat(foundEmployee).isNotNull();
+        assertThat(foundEmployee).isEqualTo(savedEmployee);
+    }
+
 }
+// pobieranie pracowników po id
+// pobieranie pracowników po email
+// uaktualnianie danych pracowników
+// usuwanie pracownika
+// testy dla zapytań JPQL
+// testy dla zapytań z indeksowanymi parametrami
+// testy dla zapytań z nazwami parametrów
