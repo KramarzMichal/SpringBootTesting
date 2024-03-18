@@ -21,6 +21,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Optional<Book> findBookByIsbn(String isbn);
 
+    Optional<Book> findBookById (Long id);
+
     @Query(value = "SELECT * FROM books WHERE price < ?1", nativeQuery = true)
     List<Book> findBooksCheaperThan(BigDecimal price);
 
